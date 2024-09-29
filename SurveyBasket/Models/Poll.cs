@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.Models;
+﻿using SurveyBasket.Contracts.Responses;
+
+namespace SurveyBasket.Models;
 
 public class Poll
 {
@@ -7,3 +9,4 @@ public class Poll
     public string Description { get; set; } = String.Empty;
 
 }
+
