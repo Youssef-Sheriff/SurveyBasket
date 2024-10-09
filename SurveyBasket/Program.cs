@@ -1,3 +1,4 @@
+
 namespace SurveyBasket;
 
 public class Program
@@ -5,8 +6,9 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+      
 
-        builder.Services.AddDependencies();
+        builder.Services.AddDependencies(builder.Configuration);
 
         var app = builder.Build();
 
