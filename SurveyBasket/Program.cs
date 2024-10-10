@@ -21,8 +21,10 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        // cors must write before authorization
+        app.UseCors();
 
+        app.UseAuthorization();
 
         app.MapControllers();
 
