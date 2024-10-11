@@ -26,7 +26,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
 
         return result.IsSuccess
-            ? Ok(result.Value) 
+            ? Ok(result.Value)
             : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
@@ -47,7 +47,7 @@ public class PollsController(IPollService pollService) : ControllerBase
     {
         var result = await _pollService.UpdateAsync(id, request, cancellationToken);
 
-        return result.IsSuccess? NoContent() : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
+        return result.IsSuccess ? NoContent() : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
     [HttpDelete("{id}")]

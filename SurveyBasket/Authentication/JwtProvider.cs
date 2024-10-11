@@ -1,6 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -55,7 +53,7 @@ public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
-            var jwtToken =(JwtSecurityToken)validatedToken;
+            var jwtToken = (JwtSecurityToken)validatedToken;
 
             return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
         }

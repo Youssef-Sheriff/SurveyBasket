@@ -1,7 +1,4 @@
-﻿
-using System.Security.Cryptography.Xml;
-
-namespace SurveyBasket.Persistence.EntitiesConfigurations;
+﻿namespace SurveyBasket.Persistence.EntitiesConfigurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
@@ -14,10 +11,10 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
             .WithOwner()
             .HasForeignKey("UserId");
 
-        builder.Property(x=>x.FirstName).HasMaxLength(100);
-        builder.Property(x=>x.LastName).HasMaxLength(100);
+        builder.Property(x => x.FirstName).HasMaxLength(100);
+        builder.Property(x => x.LastName).HasMaxLength(100);
 
-        
-       
+
+
     }
 }

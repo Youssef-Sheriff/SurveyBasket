@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using SurveyBasket.Authentication;
+﻿using Microsoft.AspNetCore.Identity.Data;
 
 namespace SurveyBasket.Controllers;
 
@@ -10,28 +9,27 @@ public class AuthController(IAuthService authService) : ControllerBase
     private readonly IAuthService _authService = authService;
 
     [HttpPost("")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginReqest reqest, CancellationToken cancellationToken)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        var authResult = await _authService.GetTokenAsync(reqest.Email, reqest.Password, cancellationToken);
+        var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
-        return authResult.IsSuccess ? Ok(authResult.Value) : BadRequest(authResult.Error);
+        return authResult.IsSuccess ? Ok(authResult.Value) : Problem(statusCode: StatusCodes.Status400BadRequest, title: authResult.Error.Code, detail: authResult.Error.Description);
 
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest reqest, CancellationToken cancellationToken)
+    public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var authResult = await _authService.GetRefreshTokenAsync(reqest.Token, reqest.RefreshToken, cancellationToken);
+        var authResult = await _authService.GetRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
 
-        return authResult is null ? BadRequest("Invalid token") : Ok(authResult);
+        return authResult.IsSuccess ? Ok(authResult.Value) : Problem(statusCode: StatusCodes.Status400BadRequest, title: authResult.Error.Code, detail: authResult.Error.Description);
     }
 
-    [HttpPut("revoke-refresh-token")]
-    public async Task<IActionResult> RevokeRefreshTokenAsync([FromBody] RefreshTokenRequest reqest, CancellationToken cancellationToken)
+    [HttpPost("revoke-refresh-token")]
+    public async Task<IActionResult> RevokeRefreshTokenAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var isRevoked = await _authService.RevokeRefreshTokenAsync(reqest.Token, reqest.RefreshToken, cancellationToken);
+        var result = await _authService.RevokeRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
 
-        return isRevoked ? Ok(isRevoked) : BadRequest("Operation faild");
+        return result.IsSuccess ? Ok() : Problem(statusCode: StatusCodes.Status400BadRequest, title: result.Error.Code, detail: result.Error.Description);
     }
-
 }

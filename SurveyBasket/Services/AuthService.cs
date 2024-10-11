@@ -11,7 +11,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
 
     private readonly int _refreshTokenExpiryDays = 14;
 
-    public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
 
         // check user exists?
@@ -24,7 +24,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         var isValidPassword = await _userManager.CheckPasswordAsync(user, password);
 
         if (!isValidPassword)
-            return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
+            return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials); 
 
         // generate Jwt token
         var (token, expiresIn) = _jwtProvider.GenerateToken(user);
@@ -45,24 +45,24 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
 
         return Result.Success(response);
 
-    }  
+    }
 
-    public async Task<AuthResponse?> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<Result<AuthResponse>> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtProvider.ValidateToken(token);
 
         if (userId is null)
-            return null;
+            return Result.Failure<AuthResponse>(UserErrors.InvalidJwtToken);
 
         var user = await _userManager.FindByIdAsync(userId);
 
-        if (user is null) 
-            return null;
+        if (user is null)
+            return Result.Failure<AuthResponse>(UserErrors.InvalidJwtToken);
 
         var userRefreshToken = user.refreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
 
-        if (userRefreshToken is null) 
-            return null;
+        if (userRefreshToken is null)
+            return Result.Failure<AuthResponse>(UserErrors.InvalidRefreshToken);
 
         userRefreshToken.RevokedOn = DateTime.UtcNow;
 
@@ -81,32 +81,33 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         });
         await _userManager.UpdateAsync(user);
 
+        var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newToken, expiresIn, newRefreshToken, refreshTokenExpiration);
 
-        return new AuthResponse(Guid.NewGuid().ToString(), user.Email, user.FirstName, user.LastName, newToken, expiresIn, newRefreshToken, refreshTokenExiration);
+        return Result.Success(response);
     }
 
-    public async Task<bool> RevokeRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<Result> RevokeRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtProvider.ValidateToken(token);
 
         if (userId is null)
-            return false;
+            return Result.Failure(UserErrors.InvalidJwtToken);
 
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user is null)
-            return false;
+            return Result.Failure(UserErrors.InvalidJwtToken);
 
-        var userRefreshToken = user.refreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
+        var userRefreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
 
         if (userRefreshToken is null)
-            return false;
+            return Result.Failure(UserErrors.InvalidRefreshToken);
 
         userRefreshToken.RevokedOn = DateTime.UtcNow;
 
         await _userManager.UpdateAsync(user);
-        
-        return true;
+
+        return Result.Success();
     }
 
     private static string GenerateRefreshToken()
@@ -114,5 +115,5 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
     }
 
-   
+
 }
