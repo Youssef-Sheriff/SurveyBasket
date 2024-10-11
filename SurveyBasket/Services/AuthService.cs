@@ -81,7 +81,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         });
         await _userManager.UpdateAsync(user);
 
-        var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newToken, expiresIn, newRefreshToken, refreshTokenExpiration);
+        var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newToken, expiresIn, newRefreshToken, refreshTokenExiration);
 
         return Result.Success(response);
     }
@@ -98,7 +98,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         if (user is null)
             return Result.Failure(UserErrors.InvalidJwtToken);
 
-        var userRefreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
+        var userRefreshToken = user.refreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
 
         if (userRefreshToken is null)
             return Result.Failure(UserErrors.InvalidRefreshToken);
