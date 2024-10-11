@@ -9,6 +9,8 @@ global using SurveyBasket.Services;
 global using SurveyBasket.Persistence;
 global using SurveyBasket.Contracts.Authentication;
 global using Microsoft.Extensions.Options;
+global using SurveyBasket.Abstractions;
+global using SurveyBasket.Errors;
 
 
 

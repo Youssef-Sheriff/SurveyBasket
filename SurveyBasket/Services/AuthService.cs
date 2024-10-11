@@ -11,20 +11,20 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
 
     private readonly int _refreshTokenExpiryDays = 14;
 
-    public async Task<AuthResponse?> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
     {
 
         // check user exists?
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null)
-            return null;
+            return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
         // check correct password
         var isValidPassword = await _userManager.CheckPasswordAsync(user, password);
 
         if (!isValidPassword)
-            return null;
+            return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
         // generate Jwt token
         var (token, expiresIn) = _jwtProvider.GenerateToken(user);
@@ -41,7 +41,10 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
         });
         await _userManager.UpdateAsync(user);
 
-        return new AuthResponse(Guid.NewGuid().ToString(), user.Email,user.FirstName, user.LastName, token, expiresIn, refreshToken, refreshTokenExiration);
+        var response = new AuthResponse(Guid.NewGuid().ToString(), user.Email, user.FirstName, user.LastName, token, expiresIn, refreshToken, refreshTokenExiration);
+
+        return Result.Success(response);
+
     }  
 
     public async Task<AuthResponse?> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
