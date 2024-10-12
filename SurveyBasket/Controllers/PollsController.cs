@@ -26,8 +26,8 @@ public class PollsController(IPollService pollService) : ControllerBase
 
 
         return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            ? Ok(result.Value) : result.ToProblem();
+        //: result.ToProblem(StatusCodes.Status404NotFound);
         //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
@@ -49,8 +49,8 @@ public class PollsController(IPollService pollService) : ControllerBase
         var result = await _pollService.UpdateAsync(id, request, cancellationToken);
 
         return result.IsSuccess
-            ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            ? NoContent() : result.ToProblem();
+        //: result.ToProblem(StatusCodes.Status404NotFound);
         //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
@@ -60,8 +60,8 @@ public class PollsController(IPollService pollService) : ControllerBase
         var result = await _pollService.DeleteAsync(id, cancellationToken);
 
         return result.IsSuccess
-            ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            ? NoContent() : result.ToProblem();
+        //: result.ToProblem(StatusCodes.Status404NotFound);
         //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
@@ -71,9 +71,9 @@ public class PollsController(IPollService pollService) : ControllerBase
         var result = await _pollService.TogglePublishStatusAsync(id, cancellationToken);
 
         return result.IsSuccess
-            ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
-            //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
+            ? NoContent() : result.ToProblem();
+        //: result.ToProblem(StatusCodes.Status404NotFound);
+        //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
 
     }
 }
