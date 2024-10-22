@@ -17,9 +17,10 @@ public static class ResultExtensions
             {
                 "errors", new[]
                 {
-                    result.Error .Code,
+                    result.Error.Code,
                     result.Error.Description
                 }
+                
             }
 
         };

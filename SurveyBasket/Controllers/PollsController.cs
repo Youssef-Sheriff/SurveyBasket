@@ -27,8 +27,6 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? Ok(result.Value) : result.ToProblem();
-        //: result.ToProblem(StatusCodes.Status404NotFound);
-        //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
     [HttpPost("")]
@@ -36,10 +34,11 @@ public class PollsController(IPollService pollService) : ControllerBase
         CancellationToken cancellationToken)
     {
 
-        var newPoll = await _pollService.AddAsync(request, cancellationToken);
+        var result = await _pollService.AddAsync(request, cancellationToken);
 
-        return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll.Adapt<PollResponse>());
-
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+            : result.ToProblem();
     }
 
     [HttpPut("{id}")]
@@ -50,8 +49,6 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent() : result.ToProblem();
-        //: result.ToProblem(StatusCodes.Status404NotFound);
-        //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
     [HttpDelete("{id}")]
@@ -61,8 +58,6 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent() : result.ToProblem();
-        //: result.ToProblem(StatusCodes.Status404NotFound);
-        //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
     }
 
     [HttpPut("{id}/togglePublish")]
@@ -72,8 +67,5 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent() : result.ToProblem();
-        //: result.ToProblem(StatusCodes.Status404NotFound);
-        //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Description);
-
     }
 }
