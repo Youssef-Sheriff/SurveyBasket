@@ -1,16 +1,13 @@
 ﻿
 namespace SurveyBasket.Persistence.EntitiesConfigurations;
 
-public class PollConfiguration : IEntityTypeConfiguration<Poll>
+public class AnswerConfiguration : IEntityTypeConfiguration<Answer>
 {
-    public void Configure(EntityTypeBuilder<Poll> builder)
+    public void Configure(EntityTypeBuilder<Answer> builder)
     {
-        builder.HasIndex(x => x.Title).IsUnique();
+        builder.HasIndex(x => new {x.QuestionId, x.Content}).IsUnique();
 
-        builder.Property(x => x.Title)
-            .HasMaxLength(100);
+        builder.Property(x => x.Content).HasMaxLength(1000);
 
-        builder.Property(x => x.Summary)
-            .HasMaxLength(1500);
     }
 }
