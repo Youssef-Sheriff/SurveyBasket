@@ -10,19 +10,15 @@ public class PollsController(IPollService pollService) : ControllerBase
     private readonly IPollService _pollService = pollService;
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var polls = await _pollService.GetAllAsync();
-
-        var response = polls.Adapt<IEnumerable<PollResponse>>();
-
-        return Ok(response);
+        return Ok(await _pollService.GetAllAsync(cancellationToken));
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get([FromRoute] int id)
+    public async Task<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var result = await _pollService.GetAsync(id);
+        var result = await _pollService.GetAsync(id, cancellationToken);
 
 
         return result.IsSuccess
