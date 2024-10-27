@@ -12,6 +12,8 @@ global using SurveyBasket.Errors;
 global using SurveyBasket.Persistence;
 global using SurveyBasket.Services;
 global using Microsoft.AspNetCore.Authorization;
+global using SurveyBasket.Extentions;
+
 
 
 
