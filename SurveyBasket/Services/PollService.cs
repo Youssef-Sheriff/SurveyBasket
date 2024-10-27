@@ -6,13 +6,21 @@ public class PollService(ApplicationDbContext context) : IPollService
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        var polls = await _context.Polls.AsNoTracking().ToListAsync(cancellationToken);
+    public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
+    
+        await _context.Polls
+        .AsNoTracking()
+        .ProjectToType<PollResponse>()
+        .ToListAsync(cancellationToken);
+    
 
-        return polls.Adapt<IEnumerable<PollResponse>>();
-    }
-
+    public async Task<IEnumerable<PollResponse>> GetCurrentAsync(CancellationToken cancellationToken = default) =>
+    
+        await _context.Polls
+            .Where(x => x.IsPublished && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow) && x.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
+            .AsNoTracking()
+            .ProjectToType<PollResponse>()
+            .ToListAsync(cancellationToken);
 
     public async Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
@@ -86,4 +94,6 @@ public class PollService(ApplicationDbContext context) : IPollService
         await _context.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
+
+    
 }
