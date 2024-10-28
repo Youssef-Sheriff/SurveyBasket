@@ -17,7 +17,7 @@ public class VotesController(IQuestionService questionService, IVoteService vote
 
         var result = await _questionService.GetAvailableAsync(pollId, userId!, cancellationToken);
 
-       return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPost("")]

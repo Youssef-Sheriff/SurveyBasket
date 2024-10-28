@@ -32,7 +32,7 @@ public class QuestionService(ApplicationDbContext context) : IQuestionService
 
     public async Task<Result<IEnumerable<QuestionResponse>>> GetAvailableAsync(int pollId, string userId, CancellationToken cancellationToken = default)
     {
-        var hasVote = await _context.Votes.AnyAsync(x=>x.PollId == pollId && x.UserId == userId, cancellationToken);
+        var hasVote = await _context.Votes.AnyAsync(x => x.PollId == pollId && x.UserId == userId, cancellationToken);
 
         if (hasVote)
             return Result.Failure<IEnumerable<QuestionResponse>>(VoteErrors.DupplicatedVote);
@@ -48,8 +48,8 @@ public class QuestionService(ApplicationDbContext context) : IQuestionService
             .Select(q => new QuestionResponse(
                 q.Id,
                 q.Content,
-                q.Answers.Where(a => a.IsActive).Select(a => new AnswerResponse(a.Id, a.Content))
-                ))
+                q.Answers.Where(a => a.IsActive).Select(a => new Contracts.Answers.AnswerResponse(a.Id, a.Content))
+            ))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -78,7 +78,6 @@ public class QuestionService(ApplicationDbContext context) : IQuestionService
         var pollIsExists = await _context.Polls.AnyAsync(x => x.Id == pollId, cancellationToken);
 
         if (!pollIsExists)
-
             return Result.Failure<QuestionResponse>(PollErrors.PollNotFound);
 
         var questionIsExists = await _context.Questions.AnyAsync(x => x.Content == request.Content && x.PollId == pollId, cancellationToken);
