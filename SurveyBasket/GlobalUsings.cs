@@ -6,6 +6,7 @@ global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.Extensions.Options;
 global using SurveyBasket.Abstractions;
 global using SurveyBasket.Contracts.Authentication;
+global using SurveyBasket.Contracts.Results;
 global using SurveyBasket.Contracts.Polls;
 global using SurveyBasket.Entities;
 global using SurveyBasket.Errors;
