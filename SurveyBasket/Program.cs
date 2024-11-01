@@ -1,4 +1,6 @@
 
+using Serilog;
+
 namespace SurveyBasket;
 
 public class Program
@@ -10,6 +12,10 @@ public class Program
 
         builder.Services.AddDependencies(builder.Configuration);
 
+        builder.Host.UseSerilog((contex, configuration) =>
+            configuration.ReadFrom.Configuration(contex.Configuration)
+        );
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -18,6 +24,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseSerilogRequestLogging();
 
         app.UseHttpsRedirection();
 
