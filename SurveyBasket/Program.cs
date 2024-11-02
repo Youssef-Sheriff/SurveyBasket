@@ -9,7 +9,6 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-
         builder.Services.AddDependencies(builder.Configuration);
 
         builder.Host.UseSerilog((contex, configuration) =>
