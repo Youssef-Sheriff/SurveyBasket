@@ -3,8 +3,8 @@
 public static class VoteErrors
 {
     public static readonly Error InvalidQuestions =
-        new("Vote.invalidQuestion", "Invalid question id.", StatusCodes.Status400BadRequest);
+        new("Vote.InvalidQuestion", "Invalid question id.", StatusCodes.Status400BadRequest);
 
     public static readonly Error DupplicatedVote =
-        new("Vote.duplicated", "You have already voted for this poll.", StatusCodes.Status409Conflict);
+        new("Vote.Duplicated", "You have already voted for this poll.", StatusCodes.Status409Conflict);
 }

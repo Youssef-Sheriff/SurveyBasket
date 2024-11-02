@@ -1,6 +1,6 @@
 ﻿namespace SurveyBasket.Errors;
 
-public class QuestionErrors
+public static class QuestionErrors
 
 {
     public static readonly Error QuestionNotFound =
