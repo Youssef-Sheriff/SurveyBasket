@@ -1,4 +1,5 @@
 
+using Hangfire;
 using Serilog;
 
 namespace SurveyBasket;
@@ -27,6 +28,8 @@ public class Program
         app.UseSerilogRequestLogging();
 
         app.UseHttpsRedirection();
+
+        app.UseHangfireDashboard("/jobs");
 
         // cors must write before authorization
         app.UseCors();

@@ -1,8 +1,10 @@
 ﻿using FluentValidation.AspNetCore;
+using Hangfire;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.Authentication;
 using SurveyBasket.Settings;
@@ -54,6 +56,7 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<GloabalExceptionHandler>();
         services.AddProblemDetails();
+        services.AddBackgroundJobsConfig(configuration);
 
         services.AddHttpContextAccessor();
 
@@ -136,6 +139,19 @@ public static class DependencyInjection
             options.SignIn.RequireConfirmedEmail = true;
             options.User.RequireUniqueEmail = true;
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+
+        services.AddHangfire(config => config
+               .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
 
         return services;
     }
