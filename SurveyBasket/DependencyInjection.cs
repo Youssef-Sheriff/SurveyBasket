@@ -53,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IVoteService, VoteService>();
         services.AddScoped<IResultService, ResultService>();
         services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         services.AddExceptionHandler<GloabalExceptionHandler>();
         services.AddProblemDetails();
