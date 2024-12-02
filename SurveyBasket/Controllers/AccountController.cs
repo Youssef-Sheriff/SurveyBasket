@@ -1,4 +1,4 @@
-﻿using SurveyBasket.Contracts;
+﻿using SurveyBasket.Contracts.Users;
 
 namespace SurveyBasket.Controllers;
 
@@ -23,5 +23,13 @@ public class AccountController(IUserService userService) : ControllerBase
         await userService.UpdateProfileAsync(User.GetUserId()!, request);
 
         return NoContent();
+    }
+
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var result = await userService.ChangePasswordAsync(User.GetUserId()!, request);
+
+        return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 }

@@ -1,5 +1,4 @@
-﻿using SurveyBasket.Contracts;
-using SurveyBasket.Contracts.Users;
+﻿using SurveyBasket.Contracts.Users;
 
 namespace SurveyBasket.Services;
 
@@ -26,5 +25,19 @@ public class UserService(UserManager<ApplicationUser> userManager) : IUserServic
         await _userManager.UpdateAsync(user!);
 
         return Result.Success();
+    }
+
+    public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        var result = await _userManager.ChangePasswordAsync(user!, request.CurrentPassword, request.NewPassword);
+
+        if (result.Succeeded)
+            return Result.Success();
+
+       var error = result.Errors.First();
+
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
 }
