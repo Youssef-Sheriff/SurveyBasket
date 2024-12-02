@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IResultService, ResultService>();
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddExceptionHandler<GloabalExceptionHandler>();
         services.AddProblemDetails();
