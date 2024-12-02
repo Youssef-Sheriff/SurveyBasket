@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.Controllers;
+﻿using SurveyBasket.Contracts;
+
+namespace SurveyBasket.Controllers;
 
 [Route("me")]
 [ApiController]
@@ -13,5 +15,13 @@ public class AccountController(IUserService userService) : ControllerBase
         var result = await userService.GetProfileAsync(User.GetUserId()!);
 
         return Ok(result.Value);
+    }
+
+    [HttpPut("info")]
+    public async Task<IActionResult> Info([FromBody] UpdateProfileRequest request)
+    {
+        await userService.UpdateProfileAsync(User.GetUserId()!, request);
+
+        return NoContent();
     }
 }
